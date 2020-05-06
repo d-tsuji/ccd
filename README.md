@@ -1,2 +1,2 @@
-# ccd
-Custom Change Directory
+# ecd
+Extend Change Directory

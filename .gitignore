@@ -13,3 +13,14 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# GoLand
+.idea/
+
+# Executable Binary
+ccd
+ccd.exe
+
+# Go test coverage
+c.out
+coverage.html
