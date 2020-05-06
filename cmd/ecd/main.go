@@ -1,8 +1,9 @@
-package ecd
+package main
 
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/d-tsuji/ecd"
 	"github.com/urfave/cli/v2"
@@ -29,6 +30,29 @@ var commandAdd = &cli.Command{
 	Name:  "add",
 	Usage: "add directory to your list",
 	Action: func(c *cli.Context) error {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return err
+		}
+		filename := filepath.Join(home, ".config", "ecd", "config")
+		f, err := os.Create(filename)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+
+		alias := c.Args().Get(0)
+		dir := c.Args().Get(1)
+		if dir == "" {
+			wd, err := os.Getwd()
+			if err != nil {
+				return err
+			}
+			dir = wd
+		}
+		if _, err = f.WriteString(fmt.Sprintf("%s\t%s\n", alias,dir)); err != nil {
+			return err
+		}
 		return nil
 	},
 }
