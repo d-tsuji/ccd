@@ -1,4 +1,4 @@
-module github.com/d-tsuji/ecd
+module github.com/d-tsuji/ccd
 
 go 1.14
 

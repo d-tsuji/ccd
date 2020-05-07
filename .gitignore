@@ -17,10 +17,6 @@
 # GoLand
 .idea/
 
-# Executable Binary
-ccd
-ccd.exe
-
 # Go test coverage
 c.out
 coverage.html

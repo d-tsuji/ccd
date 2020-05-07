@@ -1,4 +1,4 @@
-package ecd
+package main
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ var logger = &colorine.Logger{
 	Prefixes: colorine.Prefixes{
 		"debug": colorine.Verbose,
 		"info":  colorine.Info,
+		"warn":  colorine.Warn,
 		"error": colorine.Error,
 		"":      colorine.Verbose,
 	},

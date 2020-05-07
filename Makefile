@@ -1,6 +1,6 @@
 .PHONY: all build test lint clean deps devel-deps
 
-BIN := ecd
+BIN := ccd
 BUILD_LDFLAGS := "-s -w"
 GOBIN ?= $(shell go env GOPATH)/bin
 export GO111MODULE=on
@@ -15,7 +15,8 @@ devel-deps: deps
 	  golang.org/x/lint/golint
 
 build: clean
-	go build -ldflags=$(BUILD_LDFLAGS) -o $(BIN) -o $(BIN).exe ./cmd/ecd
+	go build -ldflags=$(BUILD_LDFLAGS) -o $(BIN)  .
+	go build -ldflags=$(BUILD_LDFLAGS) -o $(BIN).exe  .
 
 test: deps
 	go test -v -count=1 ./...
