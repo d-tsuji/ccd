@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -22,6 +23,7 @@ func main() {
 	err := app.Run(os.Args)
 	if err != nil {
 		if err != errCommandHelp {
+			ecd.Logf("error", "%+v", err)
 		}
 	}
 }
@@ -34,14 +36,18 @@ var commandAdd = &cli.Command{
 		if err != nil {
 			return err
 		}
-		filename := filepath.Join(home, ".config", "ecd", "config")
-		f, err := os.Create(filename)
+		fpath := filepath.Join(home, ".config", "ecd", "config.tsv")
+		os.MkdirAll(filepath.Dir(fpath), 0755)
+		f, err := os.Create(fpath)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		defer f.Close()
 
 		alias := c.Args().Get(0)
+		if alias == "" {
+			return errors.New("alias is required")
+		}
 		dir := c.Args().Get(1)
 		if dir == "" {
 			wd, err := os.Getwd()
@@ -50,7 +56,7 @@ var commandAdd = &cli.Command{
 			}
 			dir = wd
 		}
-		if _, err = f.WriteString(fmt.Sprintf("%s\t%s\n", alias,dir)); err != nil {
+		if _, err = f.WriteString(fmt.Sprintf("%s\t%s\n", alias, dir)); err != nil {
 			return err
 		}
 		return nil

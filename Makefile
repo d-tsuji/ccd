@@ -14,8 +14,8 @@ devel-deps: deps
 	GO111MODULE=off go get -u \
 	  golang.org/x/lint/golint
 
-build:
-	go build -ldflags=$(BUILD_LDFLAGS) -o $(BIN) ./cmd/ecd
+build: clean
+	go build -ldflags=$(BUILD_LDFLAGS) -o $(BIN) -o $(BIN).exe ./cmd/ecd
 
 test: deps
 	go test -v -count=1 ./...
@@ -29,5 +29,5 @@ lint: devel-deps
 	$(GOBIN)/golint -set_exit_status ./...
 
 clean:
-	rm -rf $(BIN)
+	rm -rf $(BIN) $(BIN).exe
 	go clean
