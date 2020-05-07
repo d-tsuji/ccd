@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
 	"github.com/atotto/clipboard"
+	"github.com/mattn/go-tty"
 	"github.com/rivo/tview"
 	"github.com/urfave/cli/v2"
 )
@@ -59,12 +61,14 @@ var commandAdd = &cli.Command{
 		fpath := filepath.Join(home, ".config", "ccd", "config.tsv")
 		os.MkdirAll(filepath.Dir(fpath), 0755)
 		if !exists(fpath) {
-			Logf("info", "The config file has been successfully initialized.")
 			f, err := os.Create(fpath)
 			if err != nil {
 				return err
 			}
 			f.Close()
+			f.WriteString("# This is the ccd-generated config file of the TSV.")
+			f.WriteString("# Be sure to use the tab to separate when editing.")
+			Logf("info", "The config file has been successfully initialized.")
 		}
 
 		f, err := os.Open(fpath)
@@ -278,11 +282,37 @@ var commandRm = &cli.Command{
 	},
 }
 
-// TODO: Need implementation.
 var commandEdit = &cli.Command{
 	Name:  "edit",
 	Usage: "edit the registered point",
 	Action: func(c *cli.Context) error {
+		editor := os.Getenv("EDITOR")
+		if editor == "" {
+			editor = "vi"
+		}
+		tty, err := tty.Open()
+		if err != nil {
+			return err
+		}
+		defer tty.Close()
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return err
+		}
+		fpath := filepath.Join(home, ".config", "ccd", "config.tsv")
+		f, err := os.Open(fpath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		cmd := exec.Command(editor, f.Name())
+		cmd.Stdin = tty.Input()
+		cmd.Stdout = tty.Output()
+		cmd.Stderr = tty.Output()
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("abort renames: %s", err)
+		}
+		Logf("info", "Edit has been successfully completed.")
 		return nil
 	},
 }
