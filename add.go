@@ -42,6 +42,9 @@ var commandAdd = &cli.Command{
 		var paths []config
 		for sc.Scan() {
 			text := sc.Text()
+			if text == "" {
+				continue
+			}
 			s := strings.Split(text, "\t")
 			if len(s) != 2 {
 				fmt.Errorf("invalid config, please check the config.tsv")
